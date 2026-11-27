@@ -1,36 +1,49 @@
 # Spec v4.3.3 §29.1 quality gate on Linux and Windows. Actions are pinned by
 # full commit SHA (§32): a moving tag can be repointed, as in CVE-2025-30066.
-# The Windows job is the only way to verify VT100 detection and prompts,
-# which have never been executed on Windows (see SECURITY.md, SPEC-001 §15).
+# Linux runs every gate through kcode 1.2.1 (pinned by version and SHA-256)
+# with the root configs (ADR-015). The Windows job is the only way to execute
+# VT100 detection and the prompts on Windows (SECURITY.md, SPEC-001 §15); it
+# runs the suite with the PHPUnit that devkit.php pins.
 name: ci
 
 on:
   push:
+    branches: [main]
   pull_request:
+
+permissions:
+  contents: read
+
+env:
+  KCODE_VERSION: 1.2.1
+  KCODE_SHA256: 1bc43b06798b4e7fc1df341cc505f316549f0dd5efb9c8d80031415b0cdf3e3b
+  PHPUNIT_VERSION: 11.5.56
 
 jobs:
   gate:
-    name: ${{ matrix.os }} / PHP ${{ matrix.php }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-        php: ['8.4']
+    name: Linux / PHP 8.4
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
       - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
         with:
-          php-version: ${{ matrix.php }}
+          php-version: '8.4'
           extensions: mbstring, tokenizer, pcntl, posix
           coverage: pcov
 
-      - name: Install shells for completion tests (Linux)
-        if: runner.os == 'Linux'
+      - name: Install shells for completion tests
         run: sudo apt-get update && sudo apt-get install -y zsh fish
 
+      - run: composer validate --strict
       - run: composer install --no-interaction --no-progress
+
+      - name: Install kcode ${{ env.KCODE_VERSION }}, checksum verified
+        run: |
+          curl -fsSLo kcode.phar "https://github.com/KaririCode-PHP/devkit/releases/download/v${KCODE_VERSION}/kcode.phar"
+          echo "${KCODE_SHA256}  kcode.phar" | sha256sum -c -
+          sudo install -m 0755 kcode.phar /usr/local/bin/kcode
+      - run: kcode init
 
       - run: composer cs-check
       - run: composer phpstan
@@ -40,5 +53,23 @@ jobs:
       - run: composer security
 
       - name: Mutation testing (MSI >= 80%)
-        if: runner.os == 'Linux'
         run: composer infection
+
+  windows:
+    name: Windows / PHP 8.4 (suite)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, tokenizer
+          coverage: none
+
+      - run: composer install --no-interaction --no-progress
+      - run: composer global require "phpunit/phpunit:${{ env.PHPUNIT_VERSION }}" --no-interaction --no-progress
+      - name: Test suite
+        shell: bash
+        run: |
+          "$(composer global config bin-dir --absolute --quiet)/phpunit" -c phpunit.xml.dist
