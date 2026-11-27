@@ -300,7 +300,16 @@ self::assertSame("HELLO, WALMIR!\n", $output->buffer);
 ## Quality
 
 The Spec v4.3.3 §29 gate, by command (`composer check` runs all but mutation
-testing, which needs PCOV or Xdebug):
+testing, which needs PCOV or Xdebug). The tools come from
+[KaririCode Devkit](https://github.com/KaririCode-PHP/devkit) (`kcode`), pinned in
+`devkit.php`, and run this repository's configs (ADR-015):
+
+```bash
+wget https://github.com/KaririCode-PHP/devkit/releases/latest/download/kcode.phar
+chmod +x kcode.phar && sudo mv kcode.phar /usr/local/bin/kcode   # once
+composer install && kcode init                                   # runtime, then the toolchain
+composer check && composer infection
+```
 
 | Command | Result |
 |---|---|
@@ -308,9 +317,9 @@ testing, which needs PCOV or Xdebug):
 | `composer phpstan` | level max, 0 errors (cognitive complexity ≤ 15) |
 | `composer psalm` | error level 1, 0 errors |
 | `composer complexity` | within the §13 budgets |
-| `composer test` | 351 tests, 781 assertions, 0 failures |
-| `composer infection` | covered MSI 82% |
-| `composer security` | audit, secret scan and fail-closed tests clean |
+| `composer test` | 360 tests, 790 assertions, 0 failures |
+| `composer infection` | covered MSI 81% |
+| `composer security` | audit of the runtime and the toolchain, secret scan and fail-closed tests clean |
 
 Security scope and threat model: [SECURITY.md](docs/security/SECURITY.md).
 

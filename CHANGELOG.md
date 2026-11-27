@@ -2,6 +2,38 @@
 
 All notable changes to KaririCode\Console are documented here.
 
+## [4.6.0] - 2026-11-27
+
+First import into KaririCode-PHP/console. It completes the contract items
+4.5.0 deferred and moves the toolchain to KaririCode Devkit.
+
+### Added
+- `kariricode/contract` ^2.12 as a runtime dependency.
+- `CommandLoaderException` (9006, `Configuration`) and `OutputWriteException`
+  (9007, `Runtime`).
+- ADR-014 (contract exception families), ADR-015 (toolchain through kcode),
+  ADR-003 amendment (registry of record in kariricode/exception).
+
+### Changed
+- `ConsoleException` is abstract and implements
+  `KaririCode\Contract\Exception\ExceptionInterface`; each factory returns a
+  final class with exactly one contract family: 9001 `NotFound`, 9002 and
+  9007 `Runtime`, 9003 to 9005 `Validation`, 9006 `Configuration`. Codes and
+  messages are unchanged.
+- The toolchain comes from KaririCode Devkit, pinned in `devkit.php`, and
+  runs the root configs (ADR-015): `require-dev` is gone, `composer.lock`
+  holds the runtime only, and `composer security` also audits the
+  toolchain. CI on Linux installs kcode 1.2.1 by version and SHA-256; the
+  Windows job runs the suite with the same PHPUnit.
+
+### Still open
+- `DI\ServiceProvider` and `Configuration\ConfigProvider` from the contract:
+  they need a decision on what Console binds and configures (ADR-014).
+
+### Measured
+- 360 tests, 790 assertions; PHPStan max, Psalm level 1, PER-CS and §13
+  complexity: 0 findings; 1,338 mutants killed, covered MSI 81%.
+
 ## [4.5.0] - 2026-10-02
 
 Cross-chat alignment with Spec v4.3.3 and with what the rest of the ecosystem
