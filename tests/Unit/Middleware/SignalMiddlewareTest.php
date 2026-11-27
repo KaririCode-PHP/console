@@ -94,10 +94,14 @@ final class SignalMiddlewareTest extends TestCase
      */
     public function testDeclinedSignalTerminatesProcessWhenDispositionWasDefault(): void
     {
-        $autoload = var_export(dirname(__DIR__, 3) . '/vendor/autoload.php', true);
-        $script   = <<<PHP
+        $autoload  = var_export(dirname(__DIR__, 3) . '/vendor/autoload.php', true);
+        // The worker is this test class, so the child also needs PHPUnit, which
+        // comes with the toolchain kcode installs (ADR-015).
+        $toolchain = var_export(dirname(__DIR__, 3) . '/.kcode/vendor/autoload.php', true);
+        $script    = <<<PHP
             <?php
             require {$autoload};
+            require {$toolchain};
             use KaririCode\\Console\\Tests\\Unit\\Middleware\\SignalMiddlewareTest as T;
             T::dispatchThrough(T::worker(accept: false, signo: SIGTERM));
             echo 'survived';

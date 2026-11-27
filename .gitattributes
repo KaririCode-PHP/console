@@ -11,3 +11,5 @@
 /infection.json5        export-ignore
 /.php-cs-fixer.dist.php export-ignore
 /.github/               export-ignore
+/devkit.php             export-ignore
+/docs/                  export-ignore

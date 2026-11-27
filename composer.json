@@ -1,6 +1,6 @@
 {
     "name": "kariricode/console",
-    "description": "KaririCode Console — terminal command framework (ARFA 1.3 L1, Spec V4.0)",
+    "description": "KaririCode Console — terminal command framework (ARFA 1.3 L1, Spec V4.3.3)",
     "type": "library",
     "license": "MIT",
     "keywords": [
@@ -19,17 +19,9 @@
     "require": {
         "php": "^8.4",
         "ext-mbstring": "*",
+        "kariricode/contract": "^2.12",
         "psr/event-dispatcher": "^1.0",
         "psr/log": "^3.0"
-    },
-    "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.95",
-        "infection/infection": "^0.35.5",
-        "nikic/php-parser": "^5.9",
-        "phpstan/phpstan": "^2.1",
-        "phpunit/phpunit": "^11.5",
-        "tomasvotruba/cognitive-complexity": "^1.2",
-        "vimeo/psalm": "^6.19"
     },
     "suggest": {
         "ext-pcntl": "Delivers SIGINT/SIGTERM/SIGHUP to Signalable commands (SignalMiddleware)",
@@ -47,18 +39,19 @@
         }
     },
     "scripts": {
-        "phpstan": "phpstan analyse --memory-limit=768M --no-progress",
-        "cs-check": "php-cs-fixer fix --dry-run --diff",
-        "cs-fix": "php-cs-fixer fix",
+        "phpstan": "kcode run phpstan analyse --memory-limit=768M --no-progress",
+        "cs-check": "kcode cs:fix --check",
+        "cs-fix": "kcode cs:fix",
         "complexity": "@php tools/complexity.php src",
-        "test": "phpunit",
-        "test-conformance": "phpunit --testsuite Conformance",
-        "infection": "infection --threads=max --only-covering-test-cases --no-progress",
-        "psalm": "psalm --no-progress",
+        "test": "kcode test",
+        "test-conformance": "kcode test --testsuite Conformance",
+        "infection": "kcode run infection --threads=max --only-covering-test-cases --no-progress",
+        "psalm": "kcode run psalm --no-progress",
         "security": [
             "@composer audit --locked",
+            "@composer audit --locked --working-dir=.kcode",
             "@php tools/secret-scan.php",
-            "phpunit --group security"
+            "kcode test --group security"
         ],
         "sbom": "@php tools/sbom.php",
         "check": [
@@ -84,10 +77,7 @@
         }
     },
     "config": {
-        "sort-packages": true,
-        "allow-plugins": {
-            "infection/extension-installer": false
-        }
+        "sort-packages": true
     },
     "minimum-stability": "stable",
     "prefer-stable": true

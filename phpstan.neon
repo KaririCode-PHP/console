@@ -1,11 +1,15 @@
+# kcode installs the toolchain into .kcode/ and runs this file (ADR-015).
 includes:
-    - vendor/tomasvotruba/cognitive-complexity/config/extension.neon
+    - .kcode/vendor/tomasvotruba/cognitive-complexity/config/extension.neon
 
 parameters:
     level: max
     paths:
         - src
         - tests
+    # The tests extend PHPUnit, which comes with the toolchain.
+    scanDirectories:
+        - .kcode/vendor/phpunit/phpunit/src
     # Spec v4.3.3 §13: cognitive complexity <= 15 per method. §13 sets no
     # class or dependency-tree budget, so those limits are neutralised.
     cognitive_complexity:

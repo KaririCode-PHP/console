@@ -4,13 +4,18 @@ declare(strict_types=1);
 
 /**
  * Spec v4.3.3 §24 "SBOM generated": writes sbom.cdx.json (CycloneDX 1.5)
- * from composer.json/composer.lock. Runtime has no package dependencies;
+ * from composer.json/composer.lock. Runtime packages are PSR contracts and kariricode/contract;
  * development packages are listed with scope "excluded" (never shipped).
  */
 
 $root     = dirname(__DIR__);
 $manifest = json_decode((string) file_get_contents("{$root}/composer.json"), true, flags: JSON_THROW_ON_ERROR);
 $lock     = json_decode((string) file_get_contents("{$root}/composer.lock"), true, flags: JSON_THROW_ON_ERROR);
+// The toolchain is installed by kcode (ADR-015); its lock lists the development components.
+$toolchain   = is_file("{$root}/.kcode/composer.lock")
+    ? json_decode((string) file_get_contents("{$root}/.kcode/composer.lock"), true, flags: JSON_THROW_ON_ERROR)
+    : [];
+$development = [...($lock['packages-dev'] ?? []), ...($toolchain['packages'] ?? [])];
 
 $component = static fn(array $package, string $scope): array => [
     'type'    => 'library',
@@ -35,9 +40,9 @@ $sbom = [
     ],
     'components' => [
         ...array_map(static fn(array $p): array => $component($p, 'required'), $lock['packages'] ?? []),
-        ...array_map(static fn(array $p): array => $component($p, 'excluded'), $lock['packages-dev'] ?? []),
+        ...array_map(static fn(array $p): array => $component($p, 'excluded'), $development),
     ],
 ];
 
 file_put_contents("{$root}/sbom.cdx.json", json_encode($sbom, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR) . "\n");
-printf("sbom: %d runtime, %d development components -> sbom.cdx.json\n", count($lock['packages'] ?? []), count($lock['packages-dev'] ?? []));
+printf("sbom: %d runtime, %d development components -> sbom.cdx.json\n", count($lock['packages'] ?? []), count($development));

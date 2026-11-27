@@ -21,7 +21,8 @@ use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\NodeVisitorAbstract;
 use PhpParser\ParserFactory;
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+// nikic/php-parser comes with the toolchain kcode installs (ADR-015).
+require dirname(__DIR__) . '/.kcode/vendor/autoload.php';
 
 $root = $argv[1] ?? 'src';
 $fix  = in_array('--fix', $argv, true);

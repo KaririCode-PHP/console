@@ -2,3 +2,5 @@
 /build/
 /.phpunit.cache/
 /.php-cs-fixer.cache
+/.kcode/
+/build/infection/
