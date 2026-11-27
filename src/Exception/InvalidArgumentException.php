@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace KaririCode\Console\Exception;
 
+use KaririCode\Contract\Exception\Validation;
+
 /**
  * Raised for invalid, missing or surplus positional arguments (9003, 9005).
  *
@@ -14,4 +16,4 @@ namespace KaririCode\Console\Exception;
  * @license MIT
  * @since   4.0.0
  */
-final class InvalidArgumentException extends ConsoleException {}
+final class InvalidArgumentException extends ConsoleException implements Validation {}

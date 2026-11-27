@@ -59,3 +59,13 @@ Codes 9008–9099 are reserved for future Console features.
   exception by family plus numeric `getCode()`, so the ranges must be
   disjoint: the Parser range has to be reallocated at ecosystem level. Console
   keeps 9000–9099.
+
+## Amendment — 4.6.0 (2026-11-27)
+
+- The ecosystem registry of record is now `CODE-BLOCKS.md` in
+  kariricode/exception 2.0.0. It lists Console at 9000–9099 and moves Parser
+  to 9500–9999 and Framework to 9300–9399, which closes the collision noted
+  in 4.5.0.
+- Codes are unchanged. 9006 and 9007 now have their own classes
+  (`CommandLoaderException`, `OutputWriteException`), and every class
+  implements one kariricode/contract family (ADR-014).

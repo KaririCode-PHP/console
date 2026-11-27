@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace KaririCode\Console\Exception;
 
+use KaririCode\Contract\Exception\Runtime;
+
 /**
  * Raised when a command cannot be built or fails while running (9002).
  *
@@ -14,4 +16,4 @@ namespace KaririCode\Console\Exception;
  * @license MIT
  * @since   4.0.0
  */
-final class CommandExecutionException extends ConsoleException {}
+final class CommandExecutionException extends ConsoleException implements Runtime {}

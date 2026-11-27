@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace KaririCode\Console\Exception;
 
+use KaririCode\Contract\Exception\ExceptionInterface;
 use RuntimeException;
 
 /**
@@ -14,21 +15,25 @@ use RuntimeException;
  * messages without requiring callers to know error code assignments
  * (Spec v4.3.3 §8 — error model: semantic exception factories).
  *
- * Error code registry (Console range: 9000–9099):
- *   9001  Command not found
- *   9002  Command execution failed
- *   9003  Invalid argument
- *   9004  Invalid option
- *   9005  Missing required argument
- *   9006  Loader failure
- *   9007  Output write failure
+ * Error code registry (Console range: 9000–9099, ADR-003) and the
+ * kariricode/contract family each failure implements (ADR-014):
+ *   9001  Command not found           CommandNotFoundException    NotFound
+ *   9002  Command execution failed    CommandExecutionException   Runtime
+ *   9003  Invalid argument            InvalidArgumentException    Validation
+ *   9004  Invalid option              InvalidOptionException      Validation
+ *   9005  Missing required argument   InvalidArgumentException    Validation
+ *   9006  Loader failure              CommandLoaderException      Configuration
+ *   9007  Output write failure        OutputWriteException        Runtime
+ *
+ * The class is abstract: every failure is a final subclass that implements
+ * exactly one family, so an edge maps it without knowing this package.
  *
  * @package KaririCode\Console\Exception
  * @author  Walmir Silva <walmir.silva@kariricode.org>
  * @license MIT
  * @since   4.0.0
  */
-class ConsoleException extends RuntimeException
+abstract class ConsoleException extends RuntimeException implements ExceptionInterface
 {
     // ── Semantic factories ───────────────────────────────────────────────
 
@@ -75,7 +80,7 @@ class ConsoleException extends RuntimeException
 
     public static function loaderFailure(string $path, string $reason, ?\Throwable $previous = null): self
     {
-        return new ConsoleException(
+        return new CommandLoaderException(
             message: "Command loader failed for path \"{$path}\": {$reason}",
             code: 9006,
             previous: $previous,
@@ -84,7 +89,7 @@ class ConsoleException extends RuntimeException
 
     public static function outputWriteFailure(string $reason): self
     {
-        return new ConsoleException(
+        return new OutputWriteException(
             "Output stream write failed: {$reason}",
             9007,
         );

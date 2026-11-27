@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace KaririCode\Console\Exception;
 
+use KaririCode\Contract\Exception\NotFound;
+
 /**
  * Raised when a command name (or alias) has no registration (9001).
  *
@@ -14,4 +16,4 @@ namespace KaririCode\Console\Exception;
  * @license MIT
  * @since   4.0.0
  */
-final class CommandNotFoundException extends ConsoleException {}
+final class CommandNotFoundException extends ConsoleException implements NotFound {}

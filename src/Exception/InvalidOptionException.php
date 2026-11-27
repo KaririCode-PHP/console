@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace KaririCode\Console\Exception;
 
+use KaririCode\Contract\Exception\Validation;
+
 /**
  * Raised for unknown options, missing values or invalid option declarations (9004).
  *
@@ -14,4 +16,4 @@ namespace KaririCode\Console\Exception;
  * @license MIT
  * @since   4.0.0
  */
-final class InvalidOptionException extends ConsoleException {}
+final class InvalidOptionException extends ConsoleException implements Validation {}
