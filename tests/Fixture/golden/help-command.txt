@@ -1,0 +1,14 @@
+Description:
+  Deploys the application
+
+Usage:
+  deploy [options] [--] <env> [<regions>...]
+
+Arguments:
+  env      Target environment
+  regions  Regions [default: ["eu"]]
+
+Options:
+  -t, --tag=TAG          Release tags (multiple values allowed)
+      --force            Skip checks
+      --retries=RETRIES  Attempts [default: 3]

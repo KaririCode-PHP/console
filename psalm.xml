@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<psalm
+    errorLevel="1"
+    resolveFromConfigFile="true"
+    findUnusedCode="false"
+    findUnusedBaselineEntry="false"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="https://getpsalm.org/schema/config"
+    xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+>
+    <projectFiles>
+        <directory name="src"/>
+    </projectFiles>
+
+    <issueHandlers>
+        <!--
+            Tool limitation (Psalm 6.19): PHP 8.4 interface properties are not
+            modelled, and virtual hooked properties (no backing store) are
+            reported as "not set in constructor". PHP itself throws on any
+            uninitialised access, and the suite instantiates every class.
+        -->
+        <NoInterfaceProperties errorLevel="suppress"/>
+        <PropertyNotSetInConstructor errorLevel="suppress"/>
+
+        <!-- Prompter::readHidden() toggles echo with stty; its only dynamic argument is escapeshellarg()'d. -->
+        <ForbiddenCode>
+            <errorLevel type="suppress">
+                <file name="src/Prompt/Prompter.php"/>
+            </errorLevel>
+        </ForbiddenCode>
+    </issueHandlers>
+</psalm>

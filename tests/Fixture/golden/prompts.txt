@@ -1,0 +1,14 @@
+Project (default: demo) [kebab-case]
+  Suggestions: api, cli, web
+> Database
+    [0] MySQL
+  ❯ [1] PostgreSQL
+> "7" is not one of 0..1
+> Extras (comma-separated indices)
+  ○ [0] Redis
+  ● [1] Queue
+  ○ [2] Mail
+> Proceed? [Y/n]
+> Overwrite? [y/N]
+> Token
+> 

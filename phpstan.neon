@@ -1,0 +1,15 @@
+includes:
+    - vendor/tomasvotruba/cognitive-complexity/config/extension.neon
+
+parameters:
+    level: max
+    paths:
+        - src
+        - tests
+    # Spec v4.3.3 §13: cognitive complexity <= 15 per method. §13 sets no
+    # class or dependency-tree budget, so those limits are neutralised.
+    cognitive_complexity:
+        function: 15
+        class: 1000
+        dependency_tree: 1000
+        dependency_tree_types: []

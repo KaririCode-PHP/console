@@ -1,0 +1,32 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+// Minimal entry point, as an application's bin/ script would be.
+
+use KaririCode\Console\Contract\Input;
+use KaririCode\Console\Contract\InputDefinition;
+use KaririCode\Console\Contract\Output;
+use KaririCode\Console\Enum\ExitCode;
+use KaririCode\Console\Formatter\AnsiFormatter;
+use KaririCode\Console\Input\ArgvInput;
+use KaririCode\Console\Provider\ConsoleServiceProvider;
+use KaririCode\Console\Output\ConsoleOutput;
+use KaririCode\Console\Tests\Fixture\StubCommand;
+use KaririCode\Console\ValueObject\ArgumentDescriptor;
+
+require dirname(__DIR__, 3) . '/vendor/autoload.php';
+
+$greet = new StubCommand(
+    'greet',
+    'Greets someone',
+    static fn(InputDefinition $d) => $d->addArgument(new ArgumentDescriptor('name', 'Who to greet')),
+    static function (Input $input, Output $output): ExitCode {
+        $output->writeln('<info>Hello, ' . AnsiFormatter::escape((string) $input->getArgument('name')) . '</info>');
+
+        return ExitCode::Success;
+    },
+);
+
+exit(ConsoleServiceProvider::buildApplication('demo', '1.0.0')->add($greet)->dispatch(new ArgvInput(), new ConsoleOutput()));

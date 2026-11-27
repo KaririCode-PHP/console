@@ -1,0 +1,29 @@
+_app_completion() {
+    local line="${COMP_LINE:0:COMP_POINT}"
+    local -a words
+    read -ra words <<< "$line"
+    [[ $line == *[[:space:]] ]] && words+=("")
+    local cword=$(( ${#words[@]} - 1 ))
+    local cur="${words[cword]}"
+    local commands="completion deploy help list"
+
+    if (( cword == 1 )); then
+        COMPREPLY=($(compgen -W "$commands" -- "$cur"))
+    else
+        case "${words[1]}" in
+        completion) COMPREPLY=($(compgen -W "--program" -- "$cur"));;
+        deploy) COMPREPLY=($(compgen -W "--tag --force --retries" -- "$cur"));;
+        list) COMPREPLY=($(compgen -W "--format --filter --all" -- "$cur"));;
+        esac
+    fi
+
+    if [[ $cur == *:* && $COMP_WORDBREAKS == *:* ]]; then
+        local prefix="${cur%"${cur##*:}"}" i
+        for i in "${!COMPREPLY[@]}"; do
+            COMPREPLY[i]="${COMPREPLY[i]#"$prefix"}"
+        done
+    fi
+
+    return 0
+}
+complete -F _app_completion app

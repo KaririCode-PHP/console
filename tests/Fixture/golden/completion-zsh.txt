@@ -1,0 +1,27 @@
+_app() {
+    # _arguments -C and ->state assign these; callers must localise them.
+    local curcontext="$curcontext" state state_descr line
+    typeset -A opt_args
+    _arguments -C '1: :->command' '*:: :->args'
+
+    case $state in
+        command)
+            local -a commands
+            commands=(
+                    'completion:Generate shell tab-completion scripts'
+                    'deploy:Deploys the application'
+                    'help:Display usage information for a command'
+                    'list:List all available commands'
+            )
+            _describe 'command' commands
+            ;;
+        args)
+            case $line[1] in
+                    completion) _arguments '--program=[Executable name the script completes (letters, digits, _ . -)]:value:( )';;
+                    deploy) _arguments '--tag=[Release tags]:value:( )' '--force[Skip checks]' '--retries=[Attempts]:value:( )';;
+                    list) _arguments '--format=[Output format\: table, json, plain]:value:( )' '--filter=[Only commands whose name starts with this prefix]:value:( )' '--all[Include hidden commands]';;
+            esac
+            ;;
+    esac
+}
+compdef _app app

@@ -1,0 +1,94 @@
+{
+    "name": "kariricode/console",
+    "description": "KaririCode Console — terminal command framework (ARFA 1.3 L1, Spec V4.0)",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "console",
+        "cli",
+        "command",
+        "kariricode",
+        "arfa"
+    ],
+    "authors": [
+        {
+            "name": "Walmir Silva",
+            "email": "walmir.silva@kariricode.org"
+        }
+    ],
+    "require": {
+        "php": "^8.4",
+        "ext-mbstring": "*",
+        "psr/event-dispatcher": "^1.0",
+        "psr/log": "^3.0"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.95",
+        "infection/infection": "^0.35.5",
+        "nikic/php-parser": "^5.9",
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^11.5",
+        "tomasvotruba/cognitive-complexity": "^1.2",
+        "vimeo/psalm": "^6.19"
+    },
+    "suggest": {
+        "ext-pcntl": "Delivers SIGINT/SIGTERM/SIGHUP to Signalable commands (SignalMiddleware)",
+        "ext-posix": "Re-raises declined signals so the process ends by that signal",
+        "ext-tokenizer": "Required by AttributeCommandLoader to discover #[AsCommand] classes"
+    },
+    "autoload": {
+        "psr-4": {
+            "KaririCode\\Console\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "KaririCode\\Console\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "phpstan": "phpstan analyse --memory-limit=768M --no-progress",
+        "cs-check": "php-cs-fixer fix --dry-run --diff",
+        "cs-fix": "php-cs-fixer fix",
+        "complexity": "@php tools/complexity.php src",
+        "test": "phpunit",
+        "test-conformance": "phpunit --testsuite Conformance",
+        "infection": "infection --threads=max --only-covering-test-cases --no-progress",
+        "psalm": "psalm --no-progress",
+        "security": [
+            "@composer audit --locked",
+            "@php tools/secret-scan.php",
+            "phpunit --group security"
+        ],
+        "sbom": "@php tools/sbom.php",
+        "check": [
+            "@cs-check",
+            "@phpstan",
+            "@psalm",
+            "@complexity",
+            "@test",
+            "@security"
+        ]
+    },
+    "extra": {
+        "kariricode": {
+            "arfa": {
+                "version": "1.3",
+                "level": 1
+            },
+            "asvs": {
+                "version": "5.0",
+                "level": 1
+            },
+            "spec": "4.3.3"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "infection/extension-installer": false
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

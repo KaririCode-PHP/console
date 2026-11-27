@@ -1,0 +1,8 @@
+Description:
+  Warms the cache
+
+Usage:
+  cache:warm
+
+Aliases:
+  warm

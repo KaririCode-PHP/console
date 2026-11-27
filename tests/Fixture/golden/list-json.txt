@@ -1,0 +1,28 @@
+[
+    {
+        "name": "completion",
+        "description": "Generate shell tab-completion scripts",
+        "aliases": [],
+        "hidden": false
+    },
+    {
+        "name": "deploy",
+        "description": "Deploys the application",
+        "aliases": [],
+        "hidden": false
+    },
+    {
+        "name": "help",
+        "description": "Display usage information for a command",
+        "aliases": [],
+        "hidden": false
+    },
+    {
+        "name": "list",
+        "description": "List all available commands",
+        "aliases": [
+            "commands"
+        ],
+        "hidden": false
+    }
+]

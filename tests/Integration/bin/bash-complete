@@ -1,0 +1,32 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+// Real bash completion: an interactive bash in a pseudo-terminal sources the
+// completion script, types BUFFER, presses Tab, then Enter. `app` is a shell
+// function printing its arguments, so the output is exactly the line that
+// readline completed. Usage: bash-complete SCRIPT PROGRAM BUFFER
+
+[$script, $program, $buffer] = array_slice($argv, 1, 3);
+
+$bash = proc_open(['bash', '--norc', '--noprofile', '-i'], [0 => ['pty'], 1 => ['pty'], 2 => ['pty']], $pipes, null, ['PATH' => (string) getenv('PATH'), 'TERM' => 'dumb']);
+if (!is_resource($bash)) { fwrite(STDERR, "no pty\n"); exit(3); }
+stream_set_blocking($pipes[1], false);
+
+$send = static function (string $text) use ($pipes): void { fwrite($pipes[0], $text); usleep(150_000); };
+$send("PS1=''; source " . escapeshellarg($script) . "\n");
+$send($program . "() { printf '[%s]' \"\$@\"; printf '<<DONE%s>>\\n' 42; }\n");
+$send($buffer . "\t");
+$send("\n");
+
+$seen = '';
+$deadline = microtime(true) + 5;
+while (!preg_match('/((?:\[[^\]]*\])*)<<DONE42>>/', $seen, $m) && microtime(true) < $deadline) {
+    $seen .= (string) @fread($pipes[1], 8192);
+    usleep(20_000);
+}
+fwrite($pipes[0], "exit\n");
+proc_close($bash);
+
+echo ($m[1] ?? '(no result)'), "\n";

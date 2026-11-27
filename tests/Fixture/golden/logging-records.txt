@@ -1,0 +1,56 @@
+[
+    [
+        "info",
+        "console.command.start",
+        {
+            "command": "deploy",
+            "trace_id": "<trace-id>"
+        }
+    ],
+    [
+        "error",
+        "console.command.finish",
+        {
+            "command": "deploy",
+            "trace_id": "<trace-id>",
+            "exit_code": 1,
+            "duration_ms": 12.5,
+            "error": "boom"
+        }
+    ],
+    [
+        "info",
+        "console.command.start",
+        {
+            "command": "deploy",
+            "trace_id": "<trace-id>"
+        }
+    ],
+    [
+        "info",
+        "console.command.finish",
+        {
+            "command": "deploy",
+            "trace_id": "<trace-id>",
+            "exit_code": 0,
+            "duration_ms": 1
+        }
+    ],
+    [
+        "info",
+        "console.command.start",
+        {
+            "command": "deploy",
+            "trace_id": "<trace-id>"
+        }
+    ],
+    [
+        "error",
+        "console.command.error",
+        {
+            "command": "deploy",
+            "trace_id": "<trace-id>",
+            "exception": "<RuntimeException>"
+        }
+    ]
+]

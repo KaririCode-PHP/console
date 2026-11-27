@@ -1,0 +1,17 @@
+demo 1.0
+
+Usage:
+  command [options] [--] [arguments]
+
+Global options:
+  -h, --help            Display help for the given command (or the application)
+  -q, --quiet           Do not output any message
+  -v|vv|vvv, --verbose  Increase verbosity: 1 normal, 2 more, 3 debug (stack traces)
+  -V, --version         Display the application version
+  -n, --no-interaction  Do not ask interactive questions; prompts use their defaults
+
+Available commands:
+  completion  Generate shell tab-completion scripts
+  deploy      Deploys the application
+  help        Display usage information for a command
+  list        List all available commands

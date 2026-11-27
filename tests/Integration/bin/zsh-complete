@@ -1,0 +1,19 @@
+#!/usr/bin/env zsh
+# Real zsh completion, captured. Sources a completion script inside an
+# interactive zsh running in a zpty, types BUFFER and presses Tab. A compadd
+# wrapper appends every candidate to a file (reading the pty stream would mean
+# parsing zle's redraw sequences). Prints the candidates, one per line.
+# Usage: zsh-complete SCRIPT BUFFER
+zmodload zsh/zpty || exit 3
+local out=$(mktemp)
+zpty kc zsh -f -i
+zpty -w kc 'PS1= PROMPT= RPROMPT=; autoload -Uz compinit && compinit -u -D'
+zpty -w kc "source ${(q)1}; __kc_out=${(q)out}"
+zpty -w kc 'bindkey "^I" complete-word; comppostfuncs=(__kc_done); __kc_done() { print -r -- "<$((40+2))END>" }'
+zpty -w kc 'compadd() { if [[ " $* " == *" -"[OAD]" "* ]]; then builtin compadd "$@"; return; fi; local -a h; builtin compadd -A h "$@"; (( $#h )) && print -rl -- $h >> $__kc_out }'
+zpty -w -n kc "$2"$'\t'
+local line
+while zpty -r kc line; do [[ $line == *"<42END>"* ]] && break; done
+zpty -d kc
+sort -u $out
+rm -f $out

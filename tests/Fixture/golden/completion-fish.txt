@@ -1,0 +1,15 @@
+complete -c app -f -n '__fish_use_subcommand' -a completion -d 'Generate shell tab-completion scripts'
+complete -c app -n '__fish_seen_subcommand_from completion' -l program -d 'Executable name the script completes (letters, digits, _ . -)'
+# arg: shell — Target shell: bash, zsh, or fish
+complete -c app -f -n '__fish_use_subcommand' -a deploy -d 'Deploys the application'
+complete -c app -n '__fish_seen_subcommand_from deploy' -l tag -d 'Release tags'
+complete -c app -n '__fish_seen_subcommand_from deploy' -l force -d 'Skip checks'
+complete -c app -n '__fish_seen_subcommand_from deploy' -l retries -d 'Attempts'
+# arg: env — Target environment
+# arg: regions — Regions
+complete -c app -f -n '__fish_use_subcommand' -a help -d 'Display usage information for a command'
+# arg: command — The command to describe
+complete -c app -f -n '__fish_use_subcommand' -a list -d 'List all available commands'
+complete -c app -n '__fish_seen_subcommand_from list' -l format -d 'Output format: table, json, plain'
+complete -c app -n '__fish_seen_subcommand_from list' -l filter -d 'Only commands whose name starts with this prefix'
+complete -c app -n '__fish_seen_subcommand_from list' -l all -d 'Include hidden commands'

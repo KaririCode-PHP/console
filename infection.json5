@@ -1,0 +1,15 @@
+{
+    "$schema": "vendor/infection/infection/resources/schema.json",
+    // Spec v4.3.3 §29.1 "composer infection": MSI >= 80% (§19.4).
+    "source": { "directories": ["src"] },
+    "timeout": 20,
+    "logs": {
+        "text": "build/infection/infection.log",
+        "summary": "build/infection/summary.log",
+        "json": "build/infection/infection.json"
+    },
+    "mutators": { "@default": true },
+    "minMsi": 80,
+    "minCoveredMsi": 80,
+    "testFramework": "phpunit"
+}

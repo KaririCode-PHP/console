@@ -1,0 +1,5 @@
+cache:warm  Warms the cache
+completion  Generate shell tab-completion scripts
+deploy  Deploys the application
+help  Display usage information for a command
+list  List all available commands
