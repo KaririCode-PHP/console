@@ -434,7 +434,7 @@ final class SpecConformanceTest extends TestCase
                 if (is_array($token) && $token[0] === T_STRING
                     && in_array(strtolower($token[1]), ['exec', 'system', 'passthru', 'shell_exec', 'proc_open', 'popen', 'create_function', 'assert'], true)
                     && ($tokens[$index + 1] ?? null) === '('
-                    && !in_array(strtolower($token[1]), $allowed[$path] ?? [], true)) {
+                    && !in_array(strtolower($token[1]), $allowed[str_replace('\\', '/', $path)] ?? [], true)) {
                     $violations[] = "{$path}: {$token[1]}()";
                 }
             }

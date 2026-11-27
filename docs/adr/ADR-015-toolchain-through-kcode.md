@@ -31,7 +31,9 @@ property-inspector, class-discovery and processor-pipeline moved first.
 - CI on Linux installs kcode 1.2.1 by version and SHA-256 and runs every
   gate. The Windows job, which exists to execute VT100 detection and the
   prompts on Windows, installs the same PHPUnit with `composer global
-  require` and runs the suite: kcode has not been verified on Windows.
+  require` and runs the unit and integration suites: kcode has not been
+  verified on Windows, and the conformance suite reads the code, which
+  Linux already covers.
 
 ## Consequences
 

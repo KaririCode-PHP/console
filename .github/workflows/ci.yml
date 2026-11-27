@@ -69,7 +69,9 @@ jobs:
 
       - run: composer install --no-interaction --no-progress
       - run: composer global require "phpunit/phpunit:${{ env.PHPUNIT_VERSION }}" --no-interaction --no-progress
-      - name: Test suite
+      # Conformance reads the code, not the platform, and needs the AST tools
+      # of .kcode/: Linux runs it.
+      - name: Unit and integration suites
         shell: bash
         run: |
-          "$(composer global config bin-dir --absolute --quiet)/phpunit" -c phpunit.xml.dist
+          "$(composer global config bin-dir --absolute --quiet)/phpunit" -c phpunit.xml.dist --testsuite Unit,Integration
