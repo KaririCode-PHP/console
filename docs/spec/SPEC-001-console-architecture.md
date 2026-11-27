@@ -340,7 +340,7 @@ Not verified: Windows — the CI workflow has a Windows job, but it has not run.
 | Exception | CommandExecutionException, CommandNotFoundException, ConsoleException, InvalidArgumentException, InvalidOptionException |
 | Formatter | AnsiFormatter, ProgressBar, TableFormatter |
 | Input | ArgvInput, ArrayInput, InputMapper |
-| Integration | ClassDiscoveryBridge, ConfiguratorBridge, ConsoleServiceProvider, EventDispatcherBridge, Instrumentation, LoggingBridge, ObservabilityBridge |
+| Integration | ClassDiscoveryBridge, ConfiguratorBridge, ConsoleServiceProvider (contract `DI\ServiceProvider`), ConsoleConfigProvider (contract `Configuration\ConfigProvider`), EventDispatcherBridge, Instrumentation, LoggingBridge, ObservabilityBridge |
 | Loader | AttributeCommandLoader, ExplicitCommandLoader |
 | Middleware | EventMiddleware, LoggingMiddleware, ObservabilityMiddleware, SignalMiddleware, TimingMiddleware |
 | Output | BufferedOutput, ConsoleOutput, DiagnosticOutput, NullOutput, StreamOutput |

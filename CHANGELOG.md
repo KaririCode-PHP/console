@@ -9,10 +9,19 @@ First import into KaririCode-PHP/console. It completes the contract items
 
 ### Added
 - `kariricode/contract` ^2.12 as a runtime dependency.
+- `ConsoleServiceProvider` implements the contract's `DI\ServiceProvider`:
+  `register()` binds `Application` as a singleton built on first
+  resolution; `boot()` does nothing (ADR-016).
+- `Provider\ConsoleConfigProvider` implements
+  `Configuration\ConfigProvider` under the key `console` (`name`,
+  `version`, `scan_paths`, `debug`).
+- `Application::DEFAULT_NAME` and `DEFAULT_VERSION`, the single source of
+  the defaults the bridge and the providers fall back to.
 - `CommandLoaderException` (9006, `Configuration`) and `OutputWriteException`
   (9007, `Runtime`).
 - ADR-014 (contract exception families), ADR-015 (toolchain through kcode),
-  ADR-003 amendment (registry of record in kariricode/exception).
+  ADR-016 (contract DI and configuration providers), ADR-003 amendment
+  (registry of record in kariricode/exception).
 
 ### Changed
 - `ConsoleException` is abstract and implements
@@ -26,13 +35,9 @@ First import into KaririCode-PHP/console. It completes the contract items
   toolchain. CI on Linux installs kcode 1.2.1 by version and SHA-256; the
   Windows job runs the suite with the same PHPUnit.
 
-### Still open
-- `DI\ServiceProvider` and `Configuration\ConfigProvider` from the contract:
-  they need a decision on what Console binds and configures (ADR-014).
-
 ### Measured
-- 360 tests, 790 assertions; PHPStan max, Psalm level 1, PER-CS and §13
-  complexity: 0 findings; 1,338 mutants killed, covered MSI 81%.
+- 365 tests, 812 assertions; PHPStan max, Psalm level 1, PER-CS and §13
+  complexity: 0 findings; covered MSI at least 80% in CI.
 
 ## [4.5.0] - 2026-10-02
 

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace KaririCode\Console\Integration;
 
+use KaririCode\Console\Core\Application;
+
 /**
  * Typed, lazy view over the application's 'console' configuration.
  *
@@ -13,8 +15,8 @@ namespace KaririCode\Console\Integration;
  * v4.3.3 §11 forbids I/O and lazy initialisation inside hooks.
  *
  * Recognised keys:
- *   name        string        application name        (default "KaririCode Console")
- *   version     string        application version     (default "UNKNOWN")
+ *   name        string        application name        (default Application::DEFAULT_NAME)
+ *   version     string        application version     (default Application::DEFAULT_VERSION)
  *   scan_paths  list<string>  directories for #[AsCommand] discovery
  *   debug       bool          free-form flag for the host application
  *
@@ -42,7 +44,7 @@ final class ConfiguratorBridge
         /** @var mixed $name Untyped configuration value; narrowed below. */
         $name = $this->resolveConfig()['name'] ?? null;
 
-        return is_string($name) ? $name : 'KaririCode Console';
+        return is_string($name) ? $name : Application::DEFAULT_NAME;
     }
 
     public function getApplicationVersion(): string
@@ -50,7 +52,7 @@ final class ConfiguratorBridge
         /** @var mixed $version Untyped configuration value; narrowed below. */
         $version = $this->resolveConfig()['version'] ?? null;
 
-        return is_string($version) ? $version : 'UNKNOWN';
+        return is_string($version) ? $version : Application::DEFAULT_VERSION;
     }
 
     /** @return list<string> */

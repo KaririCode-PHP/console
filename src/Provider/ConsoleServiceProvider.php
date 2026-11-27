@@ -18,10 +18,14 @@ use KaririCode\Console\Middleware\LoggingMiddleware;
 use KaririCode\Console\Middleware\ObservabilityMiddleware;
 use KaririCode\Console\Middleware\SignalMiddleware;
 use KaririCode\Console\Middleware\TimingMiddleware;
+use KaririCode\Contract\DI\BindableContainer;
+use KaririCode\Contract\DI\ServiceProvider;
 
 /**
  * Assembles a ready-to-run Application: registry, loaders, built-in
- * commands (help, list, completion) and the middleware stack.
+ * commands (help, list, completion) and the middleware stack. As a
+ * kariricode/contract service provider, register() binds Application as a
+ * singleton the container builds on first resolution (ADR-016).
  *
  *   $app = (new ConsoleServiceProvider(
  *       configurator:    new ConfiguratorBridge(fn() => $config['console']),
@@ -38,13 +42,29 @@ use KaririCode\Console\Middleware\TimingMiddleware;
  * @license MIT
  * @since   4.0.0
  */
-final readonly class ConsoleServiceProvider
+final readonly class ConsoleServiceProvider implements ServiceProvider
 {
     public function __construct(
         private ?ConfiguratorBridge $configurator = null,
         private ?CommandLoader $discovery = null,
         private Instrumentation $instrumentation = new Instrumentation(),
     ) {}
+
+    // ── Contract DI ──────────────────────────────────────────────────────
+
+    /**
+     * Binds Application; nothing is built until the container resolves it,
+     * so register() never reads configuration or scans for commands.
+     */
+    #[\Override]
+    public function register(BindableContainer $container): void
+    {
+        $container->bind(abstract: Application::class, concrete: fn(): Application => $this->build(), singleton: true);
+    }
+
+    /** Console needs nothing from the finished container. */
+    #[\Override]
+    public function boot(): void {}
 
     // ── Factory ──────────────────────────────────────────────────────────
 
@@ -65,8 +85,8 @@ final readonly class ConsoleServiceProvider
 
         $application = new Application(
             registry: $registry,
-            name: $name ?? $this->configurator?->getApplicationName() ?? 'KaririCode Console',
-            version: $version ?? $this->configurator?->getApplicationVersion() ?? 'UNKNOWN',
+            name: $name ?? $this->configurator?->getApplicationName() ?? Application::DEFAULT_NAME,
+            version: $version ?? $this->configurator?->getApplicationVersion() ?? Application::DEFAULT_VERSION,
         );
 
         // Built-ins go through registerCommand() so their name, description,
@@ -81,7 +101,7 @@ final readonly class ConsoleServiceProvider
     }
 
     /** Zero-configuration factory for scripts and tests. */
-    public static function buildApplication(string $name = 'KaririCode Console', string $version = 'UNKNOWN'): Application
+    public static function buildApplication(string $name = Application::DEFAULT_NAME, string $version = Application::DEFAULT_VERSION): Application
     {
         return (new self())->build($name, $version);
     }

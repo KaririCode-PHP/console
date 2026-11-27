@@ -50,5 +50,4 @@ instances of it, so they belonged to no family.
   no longer compiles, which no published code did (the line was never
   released).
 - `DI\ServiceProvider` and `Configuration\ConfigProvider`, also deferred in
-  4.5.0, stay open: they need a decision on what Console binds and
-  configures.
+  4.5.0, stayed open here; ADR-016 decides them.

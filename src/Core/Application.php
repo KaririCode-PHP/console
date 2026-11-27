@@ -53,6 +53,12 @@ final class Application
     /** Long options owned by dispatch(); commands may not declare them. */
     private const array RESERVED_OPTIONS = ['help', 'quiet', 'verbose', 'version', 'no-interaction'];
 
+    /** Name shown by help and list when the application sets none. */
+    public const string DEFAULT_NAME = 'KaririCode Console';
+
+    /** Version shown by --version when the application sets none. */
+    public const string DEFAULT_VERSION = 'UNKNOWN';
+
     /** Shortcuts owned by dispatch(); commands may not declare them. */
     private const array RESERVED_SHORTCUTS = ['h', 'q', 'v', 'V', 'n'];
 
@@ -60,8 +66,8 @@ final class Application
 
     public function __construct(
         public readonly CommandRegistry $registry,
-        public readonly string $name = 'KaririCode Console',
-        public readonly string $version = 'UNKNOWN',
+        public readonly string $name = self::DEFAULT_NAME,
+        public readonly string $version = self::DEFAULT_VERSION,
     ) {
         $this->pipeline = new MiddlewarePipeline();
     }

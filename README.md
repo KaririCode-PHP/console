@@ -171,6 +171,30 @@ $app->addMiddleware(new AuditMiddleware()); // first added = outermost
 
 ---
 
+## Container and configuration
+
+Console registers itself like any other KaririCode component, through the
+providers of kariricode/contract (ADR-016):
+
+```php
+use KaririCode\Console\Core\Application;
+use KaririCode\Console\Integration\ConfiguratorBridge;
+use KaririCode\Console\Provider\{ConsoleConfigProvider, ConsoleServiceProvider};
+
+$builder->withProvider(new ConsoleConfigProvider());   // key 'console': name, version, scan_paths, debug
+
+$container->register(new ConsoleServiceProvider(
+    configurator: new ConfiguratorBridge(static fn (): array => $config->get('console')),
+));
+
+$app = $container->get(Application::class);            // built once, on first use
+```
+
+`register()` only binds; the configuration is read and the command
+directories are scanned when the container first builds the application.
+
+---
+
 ## Telemetry
 
 ```php
@@ -293,6 +317,9 @@ self::assertSame("HELLO, WALMIR!\n", $output->buffer);
 | [ADR-011](docs/adr/ADR-011-output-encoding-and-escaping.md) | Output encoding and escaping |
 | [ADR-012](docs/adr/ADR-012-quality-gate-tooling.md) | Quality gate tooling (§29) |
 | [ADR-013](docs/adr/ADR-013-psr-telemetry-and-correlation.md) | PSR-3/PSR-14 telemetry and trace correlation |
+| [ADR-014](docs/adr/ADR-014-contract-exception-families.md) | Exceptions on the contract families |
+| [ADR-015](docs/adr/ADR-015-toolchain-through-kcode.md) | Toolchain through KaririCode Devkit |
+| [ADR-016](docs/adr/ADR-016-contract-di-and-config-providers.md) | Contract DI and configuration providers |
 | [CHANGELOG](CHANGELOG.md) | Release history |
 
 ---
